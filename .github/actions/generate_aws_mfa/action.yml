@@ -1,0 +1,19 @@
+name: generate-mfa-token
+description: Generate MFA token by taking MFA secret key as input
+inputs:
+  mfa-secret-key:
+    description: MFA secret key
+    required: true
+runs:
+  using: composite
+  steps:
+  - id: install-dependencies
+    run: pip install ${{ github.action_path }}/scripts/generate_mfa/requirements.txt
+    shell: bash
+  - id: generate-token
+    run: ${{ github.action_path }}/scripts/generate_mfa/generate_mfa.py
+    shell: python
+outputs:
+  aws-mfa-otp:
+    description: aws MFA OTP
+    value: ${{ steps.generate-token.AWS_MFA_OTP }}

@@ -1,0 +1,11 @@
+name: "Create/Update Infra on AWS"
+on:
+  push:
+    branches:
+      - 'main'
+jobs:
+  builds:
+    runs-on: 'ubuntu-latest'
+    steps:
+      - name: Generate AWS MFA token
+        uses:  ./.github/actions/generate_aws_mfa
