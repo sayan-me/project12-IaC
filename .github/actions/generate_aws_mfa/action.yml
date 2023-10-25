@@ -12,6 +12,7 @@ runs:
       pip install -r ${{ github.action_path }}/scripts/generate_mfa/requirements.txt
       chmod +x ${{ github.action_path }}/scripts/generate_mfa/generate_mfa.sh
       /usr/bin/python --version
+      env
     shell: bash
   - id: generate-token
     run: ${{ github.action_path }}/scripts/generate_mfa/generate_mfa.sh
