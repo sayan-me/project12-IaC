@@ -4,7 +4,6 @@ inputs:
   mfa-secret-key:
     description: MFA secret key
     required: true
-    default: ${{ secrets.AWS_MFA_TOTP_KEY }}
 runs:
   using: composite
   steps:
