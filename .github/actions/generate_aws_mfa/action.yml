@@ -8,7 +8,9 @@ runs:
   using: composite
   steps:
   - id: install-dependencies
-    run: pip install -r ${{ github.action_path }}/scripts/generate_mfa/requirements.txt
+    run: |
+      pip install -r ${{ github.action_path }}/scripts/generate_mfa/requirements.txt
+      chmod +x ${{ github.action_path }}/scripts/generate_mfa/generate_mfa.py
     shell: bash
   - id: generate-token
     run: ${{ github.action_path }}/scripts/generate_mfa/generate_mfa.py
