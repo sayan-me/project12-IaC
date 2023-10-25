@@ -10,6 +10,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
       - name: Generate AWS MFA token
+        id: generate-aws-mfa-otp
         uses:  ./.github/actions/generate_aws_mfa
         with:
           mfa-secret-key: ${{ secrets.AWS_MFA_TOTP_KEY }}
+      - name: use aws mfa otp
+        run: echo "AWS MFA token = ${{ steps.generate-aws-mfa-otp.outputs.aws-mfa-otp }}"
