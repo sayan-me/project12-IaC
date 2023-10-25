@@ -14,7 +14,7 @@ runs:
     shell: bash
   - id: generate-token
     run: ${{ github.action_path }}/scripts/generate_mfa/generate_mfa.py
-    shell: bash
+    shell: python
 outputs:
   aws-mfa-otp:
     description: aws MFA OTP
