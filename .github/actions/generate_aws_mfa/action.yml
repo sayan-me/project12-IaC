@@ -15,6 +15,8 @@ runs:
       env
     shell: bash
   - id: generate-token
+    env:
+      AWS_MFA_SECRET_KEY: ${{ inputs.mfa-secret-key }}
     run: ${{ github.action_path }}/scripts/generate_mfa/generate_mfa.sh
     shell: bash
 outputs:
