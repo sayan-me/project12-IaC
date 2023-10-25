@@ -10,11 +10,12 @@ runs:
   - id: install-dependencies
     run: |
       pip install -r ${{ github.action_path }}/scripts/generate_mfa/requirements.txt
-      chmod +x ${{ github.action_path }}/scripts/generate_mfa/generate_mfa.py
+      chmod +x ${{ github.action_path }}/scripts/generate_mfa/generate_mfa.sh
+      /usr/bin/python --version
     shell: bash
   - id: generate-token
-    run: ${{ github.action_path }}/scripts/generate_mfa/generate_mfa.py
-    shell: python
+    run: ${{ github.action_path }}/scripts/generate_mfa/generate_mfa.sh
+    shell: bash
 outputs:
   aws-mfa-otp:
     description: aws MFA OTP
