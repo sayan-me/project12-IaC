@@ -2,7 +2,7 @@ name: "Create/Update Infra on AWS"
 on:
   push:
     branches:
-      - 'main/*'
+      - 'prod/*'
       - 'staging/*'
       - 'dev/*'
 jobs:
@@ -22,9 +22,9 @@ jobs:
         aws_acnt=""
         target_env=""
         case ${branch_prefix} in
-          main*)
+          prod*)
             target_env="PROD"
-            aws_acnt="${branch_prefix#main/}"
+            aws_acnt="${branch_prefix#prod/}"
             ;;
           staging*)
             target_env="STAGING"
