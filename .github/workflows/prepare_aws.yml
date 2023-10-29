@@ -1,0 +1,66 @@
+name: "Create/Update Infra on AWS"
+on:
+  push:
+    branches:
+      - 'main/*'
+      - 'staging/*'
+      - 'dev/*'
+jobs:
+  prepare:
+    runs-on: 'ubuntu-latest'
+    outputs:
+      target-env: ${{ steps.get-env-details.outputs.target-env }}
+      target-aws-account: ${{ steps.get-env-details.outputs.target-aws-account }}
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+    - name: Identify Environment
+      id: get-env-details
+      run: |
+        branch_name="${{ github.ref }}"
+        branch_prefix="${branch_name#/refs/heads/}"
+        aws_acnt=""
+        target_env=""
+        case ${branch_prefix} in
+          main*)
+            target_env="PROD"
+            aws_acnt="${branch_prefix#main/}"
+            ;;
+          staging*)
+            target_env="STAGING"
+            aws_acnt="${branch_prefix#staging/}"
+            ;;
+          dev*)
+            target_env="DEV"
+            aws_acnt="${branch_prefix#dev/}"
+            ;;
+        esac
+        echo "::set-output name=target-env::${target_env}"
+        echo "::set-output name=target-aws-account::${aws_acnt}"
+  start-prod:
+    needs:
+    - prepare
+    if: ${{needs.prepare.outputs.target-env}} == "PROD"
+    name: Start provision process for Prod on AWS
+    uses: ./.github/workflows/prod_aws.yml
+    with:
+      target-env: ${{needs.prepare.outputs.target-env}}
+      target-aws-account: ${{needs.prepare.outputs.target-aws-account}}
+  start-staging:
+    needs:
+    - prepare
+    if: ${{needs.prepare.outputs.target-env}} == "STAGING"
+    name: Start provision process for Prod on AWS
+    uses: ./.github/workflows/staging_aws.yml
+    with:
+      target-env: ${{needs.prepare.outputs.target-env}}
+      target-aws-account: ${{needs.prepare.outputs.target-aws-account}}
+  start-dev:
+    needs:
+    - prepare
+    if: ${{needs.prepare.outputs.target-env}} == "DEV"
+    name: Start provision process for Prod on AWS
+    uses: ./.github/workflows/dev_aws.yml
+    with:
+      target-env: ${{needs.prepare.outputs.target-env}}
+      target-aws-account: ${{needs.prepare.outputs.target-aws-account}}

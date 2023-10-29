@@ -1,0 +1,45 @@
+name: Provision AWS Staging
+on:
+  workflow_call:
+    inputs:
+      target-env:
+        description: "Target environment type, accepted values: PROD, STAGING, DEV"
+        required: true
+        type: string
+      target-aws-account:
+        description: "Target aws account for terraform account"
+        required: true
+        type: string
+env:
+  VAR_PREFIX: format('{0}_{1}', github.event.inputs.target-env, github.event.inputs.target-aws-account)
+  AWS_DEFAULT_REGION: ap-south-1
+jobs:
+  provision:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Generate AWS MFA token
+      id: generate-aws-mfa-otp
+      env:
+        ENV: ${{inputs.target-env}}
+        AWS_ACNT: ${{inputs.target-aws-account}}
+      uses:  ./.github/actions/generate_aws_mfa
+      with:
+        mfa-secret-key: ${{ secrets[format('{0}_AWS_MFA_TOTP_KEY', env.VAR_PREFIX)] }}
+    - name: AWS Configure
+      id: aws-configure
+      env:
+        AWS_ACCESS_KEY_ID: ${{ secrets[format('{0}_AWS_ACCESS_KEY_ID', env.VAR_PREFIX)] }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets[format('{0}_AWS_SECRET_ACCESS_KEY', env.VAR_PREFIX)] }}
+        AWS_MFA_SERIAL_NUMBER: ${{ secrets[format('{0}_AWS_MFA_SERIAL_NUMBER', env.VAR_PREFIX)] }}
+      run: |
+        aws configure set aws_access_key_id ${{ env.AWS_ACCESS_KEY_ID }}
+        aws configure set aws_secret_access_key ${{ env.AWS_SECRET_ACCESS_KEY }}
+        aws configure set mfa_serial_number ${{ env.AWS_MFA_SERIAL_NUMBER }}
+        aws sts get-session-token --serial-number ${{ env.AWS_MFA_SERIAL_NUMBER }} --token-code ${{ steps.generate-aws-mfa-otp.outputs.aws-mfa-otp }} > mfa_credentials.json
+        export AWS_ACCESS_KEY_ID=$(jq -r .Credentials.AccessKeyId < mfa_credentials.json)
+        export AWS_SECRET_ACCESS_KEY=$(jq -r .Credentials.SecretAccessKey < mfa_credentials.json)
+        export AWS_SESSION_TOKEN=$(jq -r .Credentials.SessionToken < mfa_credentials.json)
+    - name: Test AWS
+      id: test-aws
+      run: aws s3 ls
+  
