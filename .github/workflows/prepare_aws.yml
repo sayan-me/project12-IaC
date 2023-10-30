@@ -36,7 +36,7 @@ jobs:
             ;;
         esac
         echo "target-env=${target_env}" >> "$GITHUB_OUTPUT"
-        echo "target-aws-account::${aws_acnt}" >> "$GITHUB_OUTPUT"
+        echo "target-aws-account=${aws_acnt}" >> "$GITHUB_OUTPUT"
     - name: Generate Job Summary
       run: |
         echo "__ TARGET ENV __ = ${{steps.get-env-details.outputs.target-env}}" >> "$GITHUB_STEP_SUMMARY"
