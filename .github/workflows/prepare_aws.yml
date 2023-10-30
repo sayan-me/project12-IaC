@@ -39,8 +39,6 @@ jobs:
         echo "target-aws-account=${aws_acnt}" >> "$GITHUB_OUTPUT"
         echo "**TARGET ENV** = ${target_env}" >> "$GITHUB_STEP_SUMMARY"
         echo "**TARGET AWS ACCOUNT** = ${aws_acnt}" >> "$GITHUB_STEP_SUMMARY"
-    - name: Generate Job Summary
-      run: |
   start-prod:
     needs:
     - prepare
