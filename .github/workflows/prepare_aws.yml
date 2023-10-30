@@ -18,7 +18,7 @@ jobs:
       id: get-env-details
       run: |
         branch_name="${{ github.ref }}"
-        branch_prefix="${branch_name#/refs/heads/}"
+        branch_prefix="${branch_name#refs/heads/}"
         aws_acnt=""
         target_env=""
         case ${branch_prefix} in
