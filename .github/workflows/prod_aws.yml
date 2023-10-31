@@ -11,7 +11,7 @@ on:
         required: true
         type: string
 env:
-  VAR_PREFIX: ${{format('{0}_{1}', github.event.inputs.target-env, github.event.inputs.target-aws-account)}}
+  VAR_PREFIX: ${{format('{0}_{1}', inputs.target-env, inputs.target-aws-account)}}
   AWS_DEFAULT_REGION: ap-south-1
 jobs:
   provision:
