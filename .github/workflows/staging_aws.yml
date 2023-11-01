@@ -34,6 +34,7 @@ jobs:
         AWS_SECRET_ACCESS_KEY: ${{ secrets[format('{0}_AWS_SECRET_ACCESS_KEY', env.VAR_PREFIX)] }}
         AWS_MFA_SERIAL_NUMBER: ${{ secrets[format('{0}_AWS_MFA_SERIAL_NUMBER', env.VAR_PREFIX)] }}
       run: |
+        echo "VAR_PREFIX=${{env.VAR_PREFIX}}"
         aws configure set aws_access_key_id ${{ env.AWS_ACCESS_KEY_ID }}
         aws configure set aws_secret_access_key ${{ env.AWS_SECRET_ACCESS_KEY }}
         aws configure set mfa_serial_number ${{ env.AWS_MFA_SERIAL_NUMBER }}
