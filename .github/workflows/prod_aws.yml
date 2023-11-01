@@ -30,7 +30,7 @@ jobs:
     - name: AWS Configure
       id: aws-configure
       env:
-        AWS_ACCESS_KEY_ID_VAR: ${{ format('{0}_AWS_ACCESS_KEY_ID', env.VAR_PREFIX) }}
+        AWS_ACCESS_KEY_ID_VAR:  
         AWS_SECRET_ACCESS_KEY_VAR: ${{ format('{0}_AWS_SECRET_ACCESS_KEY', env.VAR_PREFIX) }}
         AWS_MFA_SERIAL_NUMBER_VAR: ${{ format('{0}_AWS_MFA_SERIAL_NUMBER', env.VAR_PREFIX) }}
       run: |
@@ -39,7 +39,7 @@ jobs:
         echo "AWS_SECRET_ACCESS_KEY_VAR=${{env.AWS_SECRET_ACCESS_KEY_VAR}}"
         echo "AWS_MFA_SERIAL_NUMBER_VAR=${{env.AWS_MFA_SERIAL_NUMBER_VAR}}"
         echo "AWS_ACCESS_KEY_ID = ${{ secrets[env.AWS_ACCESS_KEY_ID_VAR] }}"
-        aws configure set aws_access_key_id ${{ secrets[env.AWS_ACCESS_KEY_ID_VAR] }}
+        aws configure set aws_access_key_id "${{ secrets[env.AWS_ACCESS_KEY_ID_VAR] }}"
         aws configure set aws_secret_access_key ${{ secrets[env.AWS_SECRET_ACCESS_KEY_VAR] }}
         aws configure set mfa_serial_number ${{ secrets[env.AWS_MFA_SERIAL_NUMBER_VAR] }}
         aws sts get-session-token --serial-number ${{ secrets[env.AWS_MFA_SERIAL_NUMBER_VAR] }} --token-code ${{ steps.generate-aws-mfa-otp.outputs.aws-mfa-otp }} > mfa_credentials.json
