@@ -30,15 +30,18 @@ jobs:
     - name: AWS Configure
       id: aws-configure
       env:
-        AWS_ACCESS_KEY_ID: ${{ secrets[format('{0}_AWS_ACCESS_KEY_ID', env.VAR_PREFIX)] }}
-        AWS_SECRET_ACCESS_KEY: ${{ secrets[format('{0}_AWS_SECRET_ACCESS_KEY', env.VAR_PREFIX)] }}
-        AWS_MFA_SERIAL_NUMBER: ${{ secrets[format('{0}_AWS_MFA_SERIAL_NUMBER', env.VAR_PREFIX)] }}
+        AWS_ACCESS_KEY_ID_VAR: ${{ format('{0}_AWS_ACCESS_KEY_ID', env.VAR_PREFIX) }}
+        AWS_SECRET_ACCESS_KEY_VAR: ${{ format('{0}_AWS_SECRET_ACCESS_KEY', env.VAR_PREFIX) }}
+        AWS_MFA_SERIAL_NUMBER_VAR: ${{ format('{0}_AWS_MFA_SERIAL_NUMBER', env.VAR_PREFIX) }}
       run: |
         echo "VAR_PREFIX=${{env.VAR_PREFIX}}"
-        aws configure set aws_access_key_id ${{ env.AWS_ACCESS_KEY_ID }}
-        aws configure set aws_secret_access_key ${{ env.AWS_SECRET_ACCESS_KEY }}
-        aws configure set mfa_serial_number ${{ env.AWS_MFA_SERIAL_NUMBER }}
-        aws sts get-session-token --serial-number ${{ env.AWS_MFA_SERIAL_NUMBER }} --token-code ${{ steps.generate-aws-mfa-otp.outputs.aws-mfa-otp }} > mfa_credentials.json
+        echo "AWS_ACCESS_KEY_ID_VAR=${{env.AWS_ACCESS_KEY_ID_VAR}}"
+        echo "AWS_SECRET_ACCESS_KEY_VAR=${{env.AWS_SECRET_ACCESS_KEY_VAR}}"
+        echo "AWS_MFA_SERIAL_NUMBER_VAR=${{env.AWS_MFA_SERIAL_NUMBER_VAR}}"
+        aws configure set aws_access_key_id ${{ secrets[env.AWS_ACCESS_KEY_ID_VAR] }}
+        aws configure set aws_secret_access_key ${{ secrets[env.AWS_SECRET_ACCESS_KEY_VAR] }}
+        aws configure set mfa_serial_number ${{ secrets[env.AWS_MFA_SERIAL_NUMBER_VAR] }}
+        aws sts get-session-token --serial-number ${{ secrets[env.AWS_MFA_SERIAL_NUMBER_VAR] }} --token-code ${{ steps.generate-aws-mfa-otp.outputs.aws-mfa-otp }} > mfa_credentials.json
         export AWS_ACCESS_KEY_ID=$(jq -r .Credentials.AccessKeyId < mfa_credentials.json)
         export AWS_SECRET_ACCESS_KEY=$(jq -r .Credentials.SecretAccessKey < mfa_credentials.json)
         export AWS_SESSION_TOKEN=$(jq -r .Credentials.SessionToken < mfa_credentials.json)
