@@ -30,7 +30,7 @@ Resources:
           Principal:
             Federated: !If 
             - CreateOIDCProvider
-            - GithubOidc
+            - !Ref GithubOidc
             - !Ref OIDCProviderArn
           Condition: 
             StringEquals:
