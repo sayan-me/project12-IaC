@@ -34,9 +34,9 @@ Resources:
             - !Ref OIDCProviderArn
           Condition: 
             StringEquals:
-              token.actions.githubusercontent.com.aud: !Ref OIDCAudience
+              token.actions.githubusercontent.com:aud: !Ref OIDCAudience
             StringLike:
-              token.actions.githubusercontent.com.sub: !Sub repo:${GitHubOrg}/${RepositoryName}:*
+              token.actions.githubusercontent.com:sub: !Sub repo:${GitHubOrg}/${RepositoryName}:*
   GithubOidc:
     Type: AWS::IAM::OIDCProvider
     Condition: CreateOIDCProvider
