@@ -29,8 +29,8 @@ Resources:
           Action: sts.AssumeRoleWithWebIdentity
           Principal:
             Federated: !If 
-            - condition_name
-            - value_if_true
+            - CreateOIDCProvider
+            - GithubOidc
             - !Ref OIDCProviderArn
           Condition: 
             StringEquals:
