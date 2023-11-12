@@ -14,9 +14,6 @@ Resources:
     Type: AWS::CloudFormation::Stack
     Properties:
       TemplateURL: common/prod/gha-oidc-with-role.yaml
-      Capabilities:
-      - CAPABILITY_IAM
-      - CAPABILITY_NAMED_IAM
       Parameters:
         GithubOrganization: !Ref GithubOrganization
         RepositoryName: !Ref RepositoryName
