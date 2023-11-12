@@ -1,0 +1,45 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: Role for Github Actions
+Parameters:
+  GithubOrganization:
+    Type: String
+    Description: Name of the Github Organization that can assume the role
+  RepositoryName:
+    Type: String
+    Description: Name of the Github Repository within the organization that can assume the role
+  Env:
+    Type: String
+    Description: Type of environment this account would be used as, dev, staging, prod
+    Default: dev
+    AllowedValues:
+      - dev
+      - staging
+      - prod
+  RoleName:
+    Type: String
+    Description: Name of Github Actions role
+    Default: gha-admin-role
+
+Resources:
+  RoleGithubActions:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Ref RoleName
+      AssumeRolePolicyDocument:
+        Statement:
+        - Effect: Allow
+          Action: sts:AssumeRoleWithWebIdentity
+          Principal:
+            Federated: 
+              !Sub arn:${AWS::Partition}:iam::${AWS::AccountId}:oidc-provider/token.actions.githubusercontent.com
+          Condition: 
+            StringLike:
+              token.actions.githubusercontent.com:sub: 
+              - !Sub repo:${GithubOrganization}/${RepositoryName}:ref:refs/heads/${Env}/${AWS::AccountId}
+              - !Sub repo:${GithubOrganization}/${RepositoryName}:ref:refs/heads/${Env}/${AWS::AccountId}/*
+      ManagedPolicyArns:
+        - !Sub arn:${AWS::Partition}:iam:aws:policy/AdministratorAccess
+Outputs:
+  RoleGithubActions:
+    Description: Role of GHA workflows to assume
+    Value: !GetAtt RoleGithubActions.Arn

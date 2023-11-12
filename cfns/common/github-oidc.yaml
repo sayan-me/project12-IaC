@@ -1,0 +1,25 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: Github OIDC Identity provider
+Parameters:
+  GithubOrganization:
+    Description: Name of the GitHub organization/user
+    Type: String
+  RepositoryName:
+    Description: Name of the repository
+    Type: String
+
+Resources:
+  GithubOidc:
+    Type: AWS::IAM::OIDCProvider
+    Properties:
+      Url: https://token.actions.githubusercontent.com
+      ClientIdList:
+        - sts.amazonaws.com
+        - !Sub https://github.com/${GithubOrganization}/${RepositoryName}
+      ThumbprintList:
+        - ffffffffffffffffffffffffffffffffffffffff
+
+Outputs:
+  IdpGithubOidc:
+    Description: "Arn of Github OIDC provider"
+    Value: !GetAtt GithubOidc.Arn
