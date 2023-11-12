@@ -1,0 +1,32 @@
+AWSTemplateFormatVersion: 2010-09-09
+Parameters:
+  GithubOrganization:
+    Type: String
+    Default: sayan-me
+  RepositoryName:
+    Type: String
+    Default: project12-IaC
+  Env:
+    Type: String
+    Default: prod
+Resources:
+  GhaOidcProviderWithRole:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: common/prod/gha-oidc-with-role.yaml
+      Capabilities:
+      - CAPABILITY_IAM
+      - CAPABILITY_NAMED_IAM
+      Parameters:
+        GithubOrganization: !Ref GithubOrganization
+        RepositoryName: !Ref RepositoryName
+        Env: !Ref Env
+    DeletionPolicy: Delete
+    UpdateReplacePolicy: Delete
+Outputs:
+  GithubOidcProviderArn:
+    Description: Arn of the Github Oidc Provider
+    Value: !GetAtt GhaOidcProviderWithRole.Outputs.GithubOidcProviderArn
+  GithubOidcRoleArn:
+    Description: Role arn to be assumed by GithubActions
+    Value: !GetAtt GhaOidcProviderWithRole.Outputs.GithubOidcRoleArn

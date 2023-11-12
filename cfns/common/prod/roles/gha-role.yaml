@@ -10,7 +10,6 @@ Parameters:
   Env:
     Type: String
     Description: Type of environment this account would be used as, dev, staging, prod
-    Default: dev
     AllowedValues:
       - dev
       - staging

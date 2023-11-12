@@ -1,0 +1,51 @@
+AWSTemplateFormatVersion: 2010-09-09
+Parameters:
+  GithubOrganization:
+    Description: Name of the Github Organization
+    Type: String
+  RepositoryName:
+    Description: Name of the Github repository
+    Type: String
+  Env:
+    Description: Type of enviroment, dev, staging, prod
+    Type: String
+    AllowedValues:
+      - dev
+      - staging
+      - prod
+Resources:
+  OidcProvider:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: oidc-idp/github-oidc.yaml
+      Parameters:
+        GithubOrganization: !Ref GithubOrganization
+        RepositoryName: !Ref RepositoryName
+      Capabilities:
+      - CAPABILITY_IAM
+      - CAPABILITY_NAMED_IAM
+    DeletionPolicy: Delete
+    UpdateReplacePolicy: Delete
+  GhaRole:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: roles/gha-role.yaml
+      Capabilities:
+      - CAPABILITY_IAM
+      - CAPABILITY_NAMED_IAM
+      Parameters:
+        GithubOrganization: !Ref GithubOrganization
+        RepositoryName: !Ref RepositoryName
+        Env: !Ref Env
+    DependsOn: OidcProvider
+    DeletionPolicy: Delete
+    UpdateReplacePolicy: Delete
+Outputs:
+  GithubOidcProviderArn:
+    Description: Arn of the Github Oidc Provider
+    Value: !GetAtt OidcProvider.Outputs.IdpGithubOidc
+  GithubOidcRoleArn:
+    Description: Role arn to be assumed by GithubActions
+    Value: !GetAtt GhaRole.Outputs.RoleGithubActions
+    
+        
