@@ -40,6 +40,9 @@ jobs:
         echo "**TARGET ENV** = ${target_env}" >> "$GITHUB_STEP_SUMMARY"
         echo "**TARGET AWS ACCOUNT** = ${aws_acnt}" >> "$GITHUB_STEP_SUMMARY"
   start-prod:
+    permissions:
+      id-token: write
+      contents: read
     needs:
     - prepare
     if: ${{needs.prepare.outputs.target-env}} == "PROD"
