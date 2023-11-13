@@ -38,6 +38,7 @@ Resources:
               - !Sub repo:${GithubOrganization}/${RepositoryName}:ref:refs/heads/${Env}/${AWS::AccountId}/*
       ManagedPolicyArns:
         - !Sub arn:${AWS::Partition}:iam::aws:policy/AdministratorAccess
+      MaxSessionDuration: 4500
 Outputs:
   RoleGithubActions:
     Description: Role of GHA workflows to assume
