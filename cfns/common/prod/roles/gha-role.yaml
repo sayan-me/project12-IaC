@@ -7,13 +7,13 @@ Parameters:
   RepositoryName:
     Type: String
     Description: Name of the Github Repository within the organization that can assume the role
-  Env:
-    Type: String
-    Description: Type of environment this account would be used as, dev, staging, prod
-    AllowedValues:
-      - dev
-      - staging
-      - prod
+  # Env:
+  #   Type: String
+  #   Description: Type of environment this account would be used as, dev, staging, prod
+  #   AllowedValues:
+  #     - dev
+  #     - staging
+  #     - prod
   RoleName:
     Type: String
     Description: Name of Github Actions role
@@ -33,9 +33,10 @@ Resources:
               !Sub arn:${AWS::Partition}:iam::${AWS::AccountId}:oidc-provider/token.actions.githubusercontent.com
           Condition: 
             StringLike:
-              token.actions.githubusercontent.com:sub: 
-              - !Sub repo:${GithubOrganization}/${RepositoryName}:ref:refs/heads/${Env}/${AWS::AccountId}
-              - !Sub repo:${GithubOrganization}/${RepositoryName}:ref:refs/heads/${Env}/${AWS::AccountId}/*
+              # token.actions.githubusercontent.com:sub: 
+              # - !Sub repo:${GithubOrganization}/${RepositoryName}:ref:refs/heads/${Env}/${AWS::AccountId}
+              # - !Sub repo:${GithubOrganization}/${RepositoryName}:ref:refs/heads/${Env}/${AWS::AccountId}/*
+              token.actions.githubusercontent.com:sub: !Sub repo:${GithubOrganization}/${RepositoryName}:*
       ManagedPolicyArns:
         - !Sub arn:${AWS::Partition}:iam::aws:policy/AdministratorAccess
       MaxSessionDuration: 4500
