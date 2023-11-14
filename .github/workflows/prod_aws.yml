@@ -44,6 +44,7 @@ jobs:
         role-to-assume: ${{format('arn:aws:iam::{0}:role/gha-admin-role', inputs.target-aws-account)}}
         mask-aws-account-id: true
         role-session-name: ghaSession
+        audience: https://github.com/sayan-me
     - name: Test AWS
       id: test-aws
       run: aws s3 ls
