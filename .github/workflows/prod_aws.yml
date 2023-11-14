@@ -47,6 +47,7 @@ jobs:
         aws-region: ${{env.AWS_DEFAULT_REGION}}
         role-to-assume: ${{secrets[format('{0}_AWS_DEPLOY_ROLE', env.VAR_PREFIX)]}}
         role-session-name: ghaSession
+        audience: https://github.com/sayan-me
     - name: Test AWS
       id: test-aws
       run: aws s3 ls
