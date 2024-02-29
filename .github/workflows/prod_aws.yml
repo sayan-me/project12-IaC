@@ -13,7 +13,6 @@ on:
         required: true
         type: string
 env:
-  VAR_PREFIX: ${{format('{0}_{1}', inputs.target-env, inputs.target-aws-account)}}
   AWS_DEFAULT_REGION: ap-south-1
 jobs:
   oidc_debug_test:
@@ -45,7 +44,7 @@ jobs:
       uses: aws-actions/configure-aws-credentials@v4
       with:
         aws-region: ${{env.AWS_DEFAULT_REGION}}
-        role-to-assume: ${{secrets[format('{0}_AWS_DEPLOY_ROLE', env.VAR_PREFIX)]}}
+        role-to-assume: ${{secrets[format('{0}_{1}_AWS_DEPLOY_ROLE', inputs.target-env, inputs.target-aws-account)]}}
         role-session-name: ghaSession
         audience: https://github.com/sayan-me
     - name: Test AWS
