@@ -45,27 +45,27 @@ jobs:
       contents: read
     needs:
     - prepare
-    if: ${{needs.prepare.outputs.target-env}} == "PROD"
+    if: ${{github.event.job.prepare.outputs.target-env}} == "PROD"
     name: Prod-AWS-Provision
     uses: ./.github/workflows/prod_aws.yml
     with:
-      target-env: ${{needs.prepare.outputs.target-env}}
-      target-aws-account: ${{needs.prepare.outputs.target-aws-account}}
+      target-env: ${{github.event.job.prepare.outputs.target-env}}
+      target-aws-account: ${{github.event.job.prepare.outputs.target-aws-account}}
   start-staging:
     needs:
     - prepare
-    if: ${{needs.prepare.outputs.target-env}} == "STAGING"
+    if: ${{github.event.job.prepare.outputs.target-env}} == "STAGING"
     name: Staging-AWS-Provision
     uses: ./.github/workflows/staging_aws.yml
     with:
-      target-env: ${{needs.prepare.outputs.target-env}}
-      target-aws-account: ${{needs.prepare.outputs.target-aws-account}}
+      target-env: ${{github.event.job.prepare.outputs.target-env}}
+      target-aws-account: ${{github.event.job.prepare.outputs.target-aws-account}}
   start-dev:
     needs:
     - prepare
-    if: ${{needs.prepare.outputs.target-env}} == "DEV"
+    if: ${{github.event.job.prepare.outputs.target-env}} == "DEV"
     name: Dev-AWS-Provision
     uses: ./.github/workflows/dev_aws.yml
     with:
-      target-env: ${{needs.prepare.outputs.target-env}}
-      target-aws-account: ${{needs.prepare.outputs.target-aws-account}}
+      target-env: ${{github.event.job.prepare.outputs.target-env}}
+      target-aws-account: ${{github.event.job.prepare.outputs.target-aws-account}}
