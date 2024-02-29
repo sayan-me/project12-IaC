@@ -44,7 +44,8 @@ jobs:
       uses: aws-actions/configure-aws-credentials@v4
       with:
         aws-region: ${{env.AWS_DEFAULT_REGION}}
-        role-to-assume: ${{secrets[format('{0}_{1}_AWS_DEPLOY_ROLE', inputs.target-env, inputs.target-aws-account)]}}
+        # role-to-assume: ${{secrets[format('{0}_{1}_AWS_DEPLOY_ROLE', inputs.target-env, inputs.target-aws-account)]}}
+        role-to-assume: 'arn:aws:iam::872290481719:role/gha-admin-role'
         role-session-name: ghaSession
         audience: https://github.com/sayan-me
     - name: Test AWS
