@@ -46,7 +46,7 @@ jobs:
     needs:
     - prepare
     if: ${{needs.prepare.outputs.target-env}} == "PROD"
-    name: Start provision process for Prod on AWS
+    name: Prod-AWS-Provision
     uses: ./.github/workflows/prod_aws.yml
     with:
       target-env: ${{needs.prepare.outputs.target-env}}
@@ -55,7 +55,7 @@ jobs:
     needs:
     - prepare
     if: ${{needs.prepare.outputs.target-env}} == "STAGING"
-    name: Start provision process for Prod on AWS
+    name: Staging-AWS-Provision
     uses: ./.github/workflows/staging_aws.yml
     with:
       target-env: ${{needs.prepare.outputs.target-env}}
@@ -64,7 +64,7 @@ jobs:
     needs:
     - prepare
     if: ${{needs.prepare.outputs.target-env}} == "DEV"
-    name: Start provision process for Prod on AWS
+    name: Dev-AWS-Provision
     uses: ./.github/workflows/dev_aws.yml
     with:
       target-env: ${{needs.prepare.outputs.target-env}}
