@@ -62,7 +62,7 @@ jobs:
   start-dev:
     needs:
     - prepare
-    if: ${{ needs.prepare.outputs.target-env }} == "DEV"
+    if: startsWith(github.ref_name, 'dev') && github.ref_type == 'branch'
     name: Dev-AWS-Provision
     uses: ./.github/workflows/dev_aws.yml
     with:
