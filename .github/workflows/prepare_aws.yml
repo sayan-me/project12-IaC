@@ -53,7 +53,7 @@ jobs:
   start-staging:
     needs:
     - prepare
-    if: ${{ needs.prepare.outputs.target-env }} == "STAGING"
+    if: startsWith(github.ref_name, 'staging') && github.ref_type == 'branch'
     name: Staging-AWS-Provision
     uses: ./.github/workflows/staging_aws.yml
     with:
