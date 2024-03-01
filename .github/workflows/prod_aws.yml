@@ -45,6 +45,7 @@ jobs:
       with:
         aws-region: ${{env.AWS_DEFAULT_REGION}}
         role-to-assume: ${{format('arn:aws:iam::{0}:role/gha-admin-role', inputs.target-aws-account)}}
+        mask-aws-account-id: true
         role-session-name: ghaSession
     - name: Test AWS
       id: test-aws
