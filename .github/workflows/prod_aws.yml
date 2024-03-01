@@ -46,7 +46,6 @@ jobs:
         aws-region: ${{env.AWS_DEFAULT_REGION}}
         role-to-assume: ${{format('arn:aws:iam::{0}:role/gha-admin-role', inputs.target-aws-account)}}
         role-session-name: ghaSession
-        audience: https://github.com/sayan-me
     - name: Test AWS
       id: test-aws
       run: aws s3 ls
