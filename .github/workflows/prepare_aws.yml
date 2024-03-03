@@ -6,11 +6,28 @@ on:
       - 'staging/*'
       - 'dev/*'
 jobs:
+  oidc_debug_test:
+    permissions:
+      contents: read
+      id-token: write
+    runs-on: ubuntu-latest
+    name: A test of the oidc debugger
+    steps:
+      - name: Checkout actions-oidc-debugger
+        uses: actions/checkout@v3
+        with:
+          repository: github/actions-oidc-debugger
+          ref: main
+          path: ./.github/actions/actions-oidc-debugger
+      - name: Debug OIDC Claims
+        uses: ./.github/actions/actions-oidc-debugger
+        with:
+          audience: 'sts.amazonaws.com'
   prepare:
     runs-on: 'ubuntu-latest'
     outputs:
-      target-env: ${{ steps.get-env-details.outputs.target-env }}
-      target-aws-account: ${{ steps.get-env-details.outputs.target-aws-account }}
+      target-env: ${{ steps.get-env-details.outputs.TARGET_ENV }}
+      target-aws-account: ${{ steps.get-env-details.outputs.TARGET_AWS_ACCOUNT }}
     steps:
     - name: Checkout
       uses: actions/checkout@v4
@@ -35,37 +52,42 @@ jobs:
             aws_acnt="${branch_prefix#dev/}"
             ;;
         esac
-        echo "target-env=${target_env}" >> "$GITHUB_OUTPUT"
-        echo "target-aws-account=${aws_acnt}" >> "$GITHUB_OUTPUT"
+        echo "TARGET_ENV=${target_env}" >> "$GITHUB_OUTPUT"
+        echo "TARGET_AWS_ACCOUNT=${aws_acnt}" >> "$GITHUB_OUTPUT"
         echo "**TARGET ENV** = ${target_env}" >> "$GITHUB_STEP_SUMMARY"
         echo "**TARGET AWS ACCOUNT** = ${aws_acnt}" >> "$GITHUB_STEP_SUMMARY"
   start-prod:
     permissions:
       id-token: write
       contents: read
-    needs:
-    - prepare
-    if: ${{needs.prepare.outputs.target-env}} == "PROD"
-    name: Start provision process for Prod on AWS
+    needs: prepare
+    if: ${{ needs.prepare.outputs.target-env }} == "PROD"
+    name: Prod-AWS-Provision
     uses: ./.github/workflows/prod_aws.yml
     with:
-      target-env: ${{needs.prepare.outputs.target-env}}
-      target-aws-account: ${{needs.prepare.outputs.target-aws-account}}
+      target-env: ${{ needs.prepare.outputs.target-env }}
+      target-aws-account: ${{ needs.prepare.outputs.target-aws-account }}
   start-staging:
+    permissions:
+      id-token: write
+      contents: read
     needs:
     - prepare
-    if: ${{needs.prepare.outputs.target-env}} == "STAGING"
-    name: Start provision process for Prod on AWS
+    if: startsWith(github.ref_name, 'staging') && github.ref_type == 'branch'
+    name: Staging-AWS-Provision
     uses: ./.github/workflows/staging_aws.yml
     with:
-      target-env: ${{needs.prepare.outputs.target-env}}
-      target-aws-account: ${{needs.prepare.outputs.target-aws-account}}
+      target-env: ${{ needs.prepare.outputs.target-env }}
+      target-aws-account: ${{ needs.prepare.outputs.target-aws-account }}
   start-dev:
+    permissions:
+      id-token: write
+      contents: read
     needs:
     - prepare
-    if: ${{needs.prepare.outputs.target-env}} == "DEV"
-    name: Start provision process for Prod on AWS
+    if: startsWith(github.ref_name, 'dev') && github.ref_type == 'branch'
+    name: Dev-AWS-Provision
     uses: ./.github/workflows/dev_aws.yml
     with:
-      target-env: ${{needs.prepare.outputs.target-env}}
-      target-aws-account: ${{needs.prepare.outputs.target-aws-account}}
+      target-env: ${{ needs.prepare.outputs.target-env }}
+      target-aws-account: ${{ needs.prepare.outputs.target-aws-account }}

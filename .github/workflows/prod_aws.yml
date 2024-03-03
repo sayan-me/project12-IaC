@@ -13,14 +13,10 @@ on:
         required: true
         type: string
 env:
-  VAR_PREFIX: ${{format('{0}_{1}', inputs.target-env, inputs.target-aws-account)}}
   AWS_DEFAULT_REGION: ap-south-1
 jobs:
   provision:
     runs-on: ubuntu-latest
-    permissions:
-      id-token: write
-      contents: read
     steps:
     - name: Checkout
       uses: actions/checkout@v4
@@ -28,9 +24,13 @@ jobs:
       uses: aws-actions/configure-aws-credentials@v4
       with:
         aws-region: ${{env.AWS_DEFAULT_REGION}}
-        role-to-assume: ${{secrets[format('{0}_AWS_DEPLOY_ROLE', env.VAR_PREFIX)]}}
+        role-to-assume: ${{format('arn:aws:iam::{0}:role/gha-admin-role', inputs.target-aws-account)}}
+        mask-aws-account-id: true
         role-session-name: ghaSession
     - name: Test AWS
       id: test-aws
       run: aws s3 ls
+    - name: Get Short-lived Access Creds
+      id: get-access-creds
+      run: echo -e "ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}\nSECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}"
   

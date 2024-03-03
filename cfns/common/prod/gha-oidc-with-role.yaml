@@ -30,7 +30,7 @@ Resources:
       Parameters:
         GithubOrganization: !Ref GithubOrganization
         RepositoryName: !Ref RepositoryName
-        Env: !Ref Env
+        # Env: !Ref Env
     DependsOn: OidcProvider
     DeletionPolicy: Delete
     UpdateReplacePolicy: Delete
