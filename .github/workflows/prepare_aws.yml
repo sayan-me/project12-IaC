@@ -44,13 +44,16 @@ jobs:
       id-token: write
       contents: read
     needs: prepare
-    if: startsWith(github.ref_name, 'prod') && github.ref_type == 'branch'
+    if: ${{ needs.prepare.outputs.target-env }} == "PROD"
     name: Prod-AWS-Provision
     uses: ./.github/workflows/prod_aws.yml
     with:
       target-env: ${{ needs.prepare.outputs.target-env }}
       target-aws-account: ${{ needs.prepare.outputs.target-aws-account }}
   start-staging:
+    permissions:
+      id-token: write
+      contents: read
     needs:
     - prepare
     if: startsWith(github.ref_name, 'staging') && github.ref_type == 'branch'
@@ -60,6 +63,9 @@ jobs:
       target-env: ${{ needs.prepare.outputs.target-env }}
       target-aws-account: ${{ needs.prepare.outputs.target-aws-account }}
   start-dev:
+    permissions:
+      id-token: write
+      contents: read
     needs:
     - prepare
     if: startsWith(github.ref_name, 'dev') && github.ref_type == 'branch'
