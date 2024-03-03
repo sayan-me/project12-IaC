@@ -60,8 +60,9 @@ jobs:
     permissions:
       id-token: write
       contents: read
-    needs: prepare
-    if: ${{ needs.prepare.outputs.target-env }} == "PROD"
+    needs:
+    - prepare
+    if: startsWith(github.ref_name, 'prod') && github.ref_type == 'branch'
     name: Prod-AWS-Provision
     uses: ./.github/workflows/prod_aws.yml
     with:
