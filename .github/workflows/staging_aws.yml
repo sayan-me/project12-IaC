@@ -34,3 +34,4 @@ jobs:
     - name: Get Short-lived Access Creds
       id: get-access-creds
       run: echo -e "ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}\nSECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}"
+  
