@@ -36,7 +36,7 @@ Resources:
               # token.actions.githubusercontent.com:sub: 
               # - !Sub repo:${GithubOrganization}/${RepositoryName}:ref:refs/heads/${Env}/${AWS::AccountId}
               # - !Sub repo:${GithubOrganization}/${RepositoryName}:ref:refs/heads/${Env}/${AWS::AccountId}/*
-              token.actions.githubusercontent.com:sub: !Sub repo:${GithubOrganization}/${RepositoryName}:ref:refs/head/${Env}/${AWS::AccountId}
+              token.actions.githubusercontent.com:sub: !Sub repo:${GithubOrganization}/${RepositoryName}:ref:refs/heads/${Env}/${AWS::AccountId}
       ManagedPolicyArns:
         - !Sub arn:${AWS::Partition}:iam::aws:policy/AdministratorAccess
       MaxSessionDuration: 4500
