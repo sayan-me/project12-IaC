@@ -6,6 +6,6 @@ locals {
 module "gha_integration" {
   source = "../modules/gha-oidc"
   GithubOrganization = local.GithubOrganization
-  RepositoryName = local.GithubOrganization
+  RepositoryName = local.RepositoryName
   env = local.env
 }
