@@ -15,6 +15,7 @@ provider "aws" {
     tags = {
       "create-by" = "terraform"
       "tf-module" = "gha-oidc"
+      "for" = "project12-IaC"
       "env" = var.env
     }
   }
